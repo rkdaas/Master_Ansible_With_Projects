@@ -1,0 +1,8 @@
+---
+
+- name: Deploy Url shortener app 
+  hosts: ec2_servers
+  become: true
+  roles: 
+    - app
+

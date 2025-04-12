@@ -1,0 +1,8 @@
+---
+# defaults file for ec2_create
+
+Image_id: ami-0e35ddab05955cf57
+aws_region: ap-south-1
+key_name: NewKey
+security_group: default
+instance_type: t2.micro

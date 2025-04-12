@@ -1,0 +1,5 @@
+---
+- hosts: localhost
+  connection: localhost
+  roles: 
+    - ec2_create

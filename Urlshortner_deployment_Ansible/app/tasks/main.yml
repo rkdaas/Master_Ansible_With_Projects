@@ -1,0 +1,75 @@
+---
+# tasks file for app
+
+- name: Install required APT packages 
+  apt: 
+    name:
+      - curl
+      - gnupg
+      - ca-certificates
+      - git
+    update_cache: yes
+    state: present
+
+
+- name: Add Node.js APT repository
+  shell: |
+    curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+  args:
+    executable: /bin/bash
+  
+- name: Install Node.js 
+  apt:
+    name: nodejs
+    state: present
+    update_cache: yes
+
+- name: Install PM2 globally
+  npm:
+    name: pm2
+    global: yes
+  
+- name: Clone the repository
+  git: 
+    repo: 'https://github.com/rkdaas/UrlShortner.git'
+    dest: /home/ubuntu/UrlShortner
+    update: yes
+  
+- name: Install project dependencies
+  npm: 
+    path: /home/ubuntu/UrlShortner
+
+- name: Start the application with PM2
+  shell: |
+    pm2 start index.js --name urlshortner
+    pm2 save
+    pm2 startup systemd
+  args:
+    chdir: /home/ubuntu/UrlShortner
+  
+- name: Import MongoDB public GPG key
+  apt_key:
+    url: https://www.mongodb.org/static/pgp/server-6.0.asc
+    state: present
+
+- name: Add MongoDB repository
+  apt_repository:
+    repo: deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse
+    state: present
+    filename: mongodb-org-6.0
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install MongoDB
+  apt:
+    name: mongodb-org
+    state: present
+
+- name: Enable and start MongoDB service
+  service:
+    name: mongod
+    state: started
+    enabled: yes
+

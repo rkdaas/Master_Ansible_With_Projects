@@ -1,0 +1,19 @@
+---
+- name: Deploy static website to Ec2 Nginx servers 
+  hosts: ec2_servers
+  become: true
+  tasks: 
+    - name: Copy custom index.html to nginx webdirectory
+      ansible.builtin.copy:
+        src: index.html
+        dest: /var/www/html/index.html
+        owner: www-data
+        group: www-data
+        mode: '0644'
+
+    - name: Restart Nginx to apply changes 
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+
+
