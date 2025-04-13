@@ -1,2 +1,19 @@
----
-# tasks file for Assignment_role
+- name: Load AWS secrets 
+  include_vars: secrets.yml
+
+- name: Launch Ec2 instances 
+  amazon.aws.ec2_instance:
+    name: "{{item.name}}"
+    region: "{{item.aws_region}}"
+    key_name: "{{item.key_name}}"
+    instance_type: "{{item.instance_type}}"
+    security_group: "{{item.security_group}}"
+    network:
+      assign_public_ip: true
+    image_id: "{{item.image_id}}"
+    wait : yes
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+
+  loop: "{{instances}}"
+

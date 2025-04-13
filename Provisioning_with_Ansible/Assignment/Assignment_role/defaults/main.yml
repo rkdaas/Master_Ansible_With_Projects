@@ -1,2 +1,27 @@
 ---
 # defaults file for Assignment_role
+instances:
+- name: Ubuntu-1
+  aws_region: ap-south-1
+  key_name: NewKey
+  security_group: default
+  instance_type: t2.micro
+  image_id: ami-0e35ddab05955cf57
+
+- name: Ubuntu-2
+  aws_region: ap-south-1
+  key_name: NewKey
+  security_group: default
+  instance_type: t2.micro
+  image_id: ami-0e35ddab05955cf57
+
+- name: AmazonLinux
+  aws_region: ap-south-1
+  key_name: NewKey
+  security_group: default
+  instance_type: t2.micro
+  image_id: ami-002f6e91abff6eb96
+
+
+
+

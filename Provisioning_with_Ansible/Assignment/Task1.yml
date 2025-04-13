@@ -1,0 +1,7 @@
+--- 
+- name: Launching Instances 
+  hosts: localhost
+  connection: local
+  roles: 
+    - Assignment_role
+  
