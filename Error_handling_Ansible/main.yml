@@ -1,0 +1,57 @@
+---
+- hosts: all
+  become: true
+  gather_facts: true
+  tasks: 
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Update yum cache 
+      yum:
+        update_cache: yes
+      when: ansible_distribution in ["RedHat", "Amazon"]
+
+    - name: Install required packages on Ubuntu 
+      ansible.builtin.apt: 
+        name: "{{ item }}"
+        state: latest
+      loop: 
+        - openssh-server
+        - openssl
+      when: ansible_distribution == "Ubuntu"
+      ignore_errors: yes
+    
+    - name: Install required packages on Amazon Linux
+      ansible.builtin.yum: 
+        name: "{{ item }}"
+        state: latest
+      loop: 
+        - openssh
+        - openssl
+      when: ansible_distribution == "Amazon"
+      ignore_errors: yes
+
+    - name: Check if Docker is installed
+      shell: which docker
+      register: docker_check
+      ignore_errors: yes
+
+    - name: Install Docker if not installed on Ubuntu
+      ansible.builtin.apt:
+        name: docker.io
+        state: present
+      when:
+        - ansible_distribution == "Ubuntu"
+        - docker_check.rc != 0
+      ignore_errors: yes
+
+    - name: Install Docker if not installed on Amazon Linux
+      ansible.builtin.yum:
+        name: docker
+        state: present
+      when:
+        - ansible_distribution == "Amazon"
+        - docker_check.rc != 0
+      ignore_errors: yes
